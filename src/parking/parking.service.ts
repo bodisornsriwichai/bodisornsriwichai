@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { ParkingRepository } from './parking.repository';
-import { STATUS, CODE_201, CODE_400, SLOT } from '../constant/common';
+import { STATUS, CODE_200, CODE_201, CODE_400, SLOT } from '../constant/common';
 
 @Injectable()
 export class ParkingService {
@@ -44,6 +44,21 @@ export class ParkingService {
       return CODE_400;
     }
     return CODE_201;
+  }
+
+  async deleteAllByParkingLotId(parkingLotId) {
+    let res;
+    try {
+      await this.parkingRepository.createQueryBuilder().delete().where(`parking_lot_id = :id`,{id:parkingLotId}).execute();
+      this.logger.log({
+        message: `deleted parking by parkingLotId`,
+        parkingLotId: parkingLotId,
+      });
+    } catch (error) {
+      this.logger.error({ message: `Failed parking cannot deleted DB`,error });
+      return CODE_400;
+    }
+    return CODE_200;
 
   }
 }

@@ -47,7 +47,59 @@ export class ParkingLotService {
       return CODE_400;
     }
 
+    if(res){
+        return await this.createParking(res.id,res.parkingSmall,res.parkingMedium,res.parkingLarge);
+    }
 
     return CODE_201;
+  }
+
+  async createParking(parkingLotId,parkingSmall,parkingMedium,parkingLarge) {
+    let parkingId = 1;
+    if(parkingSmall > 0){
+      parkingId = 1;
+      for(;parkingId <= parkingSmall; parkingId++ ){
+        const resParking =  await this.parkingService.create(parkingLotId,parkingId,CAR_SIZE.SMALL);
+        if(resParking.statusCode === 400){
+          await this.clearParkingLot(parkingLotId);
+          return CODE_400;
+        }
+      }
+    }
+    if(parkingMedium > 0){
+      parkingId = 1;
+      for(;parkingId <= parkingMedium; parkingId++ ){
+        const resParking =  await this.parkingService.create(parkingLotId,parkingId,CAR_SIZE.MEDIUM);
+        if(resParking.statusCode === 400){
+          await this.clearParkingLot(parkingLotId);
+          return CODE_400;
+        }
+      }
+    }
+    if(parkingLarge > 0){
+      parkingId = 1;
+      for(;parkingId <= parkingLarge; parkingId++ ){
+        const resParking =  await this.parkingService.create(parkingLotId,parkingId,CAR_SIZE.LARGE);
+        if(resParking.statusCode === 400){
+          await this.clearParkingLot(parkingLotId);
+          return CODE_400;
+        }
+      }
+    }
+    return CODE_201;
+  }
+
+  async clearParkingLot(parkingLotId) {
+    try {
+      await this.parkingLotRepository.createQueryBuilder().delete().where(`id = :id`,{id:parkingLotId}).execute();
+      await this.parkingService.deleteAllByParkingLotId(parkingLotId);
+      this.logger.log({
+        message: `deleted parking-lot by parkingLotId`,
+        parkingLotId: parkingLotId,
+      });
+    } catch (error) {
+      this.logger.error({ message: `Failed parking-lot cannot deleted DB`,error });
+      return CODE_400;
+    }
   }
 }
