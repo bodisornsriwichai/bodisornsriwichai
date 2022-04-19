@@ -4,18 +4,14 @@ import {
   IsNotEmpty,
   MaxLength,
   IsEnum,
+  IsNumberString
 } from 'class-validator';
-import { CAR_SIZE_ENUM } from '../constant/common';
+import { CAR_SIZE_ENUM } from '../../constant/common';
 
-export class RegistrationCheckinDto {
+export class RegistrationPlatesDto {
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   parkingLotId: number;
-
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(250)
-  plateNumber: string;
 
   @IsNotEmpty()
   @IsEnum(CAR_SIZE_ENUM)

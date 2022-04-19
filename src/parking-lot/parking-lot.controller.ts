@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, ValidationPipe, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ValidationPipe, UsePipes } from '@nestjs/common';
 
 import { ParkingLotService } from './parking-lot.service';
 import { ParkingLotDto } from './parking-lot.dto';
@@ -9,10 +9,10 @@ export class ParkingLotController {
     private readonly parkingLotService: ParkingLotService,
   ) {}
 
-    @Get()
-    getHello(): string {
-      this.parkingLotService.listAll();
-      return 'okkkk2'
+    @Get(':id')
+    listById(@Param() params) {
+      let { id } = params;
+      return this.parkingLotService.getParkingLot(id);
     }
 
     @Post('')

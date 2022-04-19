@@ -34,6 +34,11 @@ export enum CAR_SIZE_ENUM {
   LARGE = 'large',
 }
 
+export enum STATUS_ENUM {
+  ACIIVE = 'active',
+  INACIIVE = 'inactive',
+}
+
 export const CODE_200 = {
   statusCode: HttpStatus.OK,
   message: HTTP_RESPONSE.CODE_200,

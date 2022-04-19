@@ -18,4 +18,40 @@ export class RegistrationService {
         const { plateNumber, parkingLotId } = body;
         return await this.parkingService.checkSlot(parkingLotId, plateNumber);
     }
+
+    async getPlates(parkingLotId, carSize): Promise<any> {
+      parkingLotId = Number(parkingLotId);
+      if(!Number.isInteger(parkingLotId)){
+        return CODE_400;
+      }
+      const parkingList = await this.parkingService.listByParkingLot(parkingLotId, carSize, SLOT.FULL);
+      let res = {
+        plateNumbers:[],
+        total:0
+      }
+      for (const parkingData of parkingList) {
+        res.plateNumbers.push({plateNumber:parkingData.plateNumber, slotNumber: parkingData.parkingId});
+        res.total += 1;
+      }
+
+      return res;
+    }
+
+    async getAllocated(parkingLotId, carSize): Promise<any> {
+      parkingLotId = Number(parkingLotId);
+      if(!Number.isInteger(parkingLotId)){
+        return CODE_400;
+      }
+      const parkingList = await this.parkingService.listByParkingLot(parkingLotId, carSize, SLOT.EMPTY);
+      let res = {
+        slotNumber:[],
+        total:0
+      }
+      for (const parkingData of parkingList) {
+        res.slotNumber.push(parkingData.parkingId);
+        res.total += 1;
+      }
+
+      return res;
+    }
 }

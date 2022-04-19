@@ -29,33 +29,33 @@
 ## Installation
 
 ```bash
-$ npm install
+$ yarn
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
 ## Test
 
 ```bash
-# unit tests
-$ npm run test
+coming soon...
+```
 
-# e2e tests
-$ npm run test:e2e
+## Docker
 
-# test coverage
-$ npm run test:cov
+```bash
+# build image
+$ docker buildx build --platform=linux/amd64 -t parking-lot .
+
+# run docker
+$ docker run -p 3000:3000 parking-lot
 ```
 
 ## Support

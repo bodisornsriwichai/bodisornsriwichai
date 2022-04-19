@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ParkingLotController } from './parking-lot/parking-lot.controller';
+import { ParkingController } from './parking/parking.controller';
 import { ParkingLotModule } from './parking-lot/parking-lot.module';
 import { ParkingModule } from './parking/parking.module';
 import { RegistrationController } from './registration/registration.controller';
@@ -27,7 +28,7 @@ import databaseConfig from './config/database.config';
     ParkingLotModule,
     ParkingModule,
     RegistrationModule],
-  controllers: [AppController, ParkingLotController, RegistrationController],
+  controllers: [AppController, ParkingLotController, RegistrationController, ParkingController],
   providers: [AppService],
 })
 export class AppModule {}

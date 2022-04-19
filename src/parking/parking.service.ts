@@ -12,14 +12,20 @@ export class ParkingService {
     private readonly parkingRepository: ParkingRepository
   ) {}
 
-  async listAll(): Promise<any> {
-    const query = this.parkingRepository.createQueryBuilder();
-    const data = await query.getMany();
-    console.log('===================');
-    console.log(data);
-    this.logger.log('Doing something...');
-    console.log('===================');
-    return data;
+  async listByParkingLot(id, carSize?,slot?): Promise<any> {
+    let query = this.parkingRepository.createQueryBuilder();
+    query = query.where(`parking_lot_id = :parkingLotId`, { parkingLotId:id });
+    query = query.andWhere(`status = :STATUS`, { STATUS: STATUS.ACIIVE });
+    query.orderBy('id');
+    if(carSize){
+      query = query.andWhere(`car_size = :carSize`, { carSize });
+    }
+    if(slot){
+      query = query.andWhere(`slot = :slot`, { slot: slot });
+    }
+
+    const res = await query.getMany();
+    return res;
   }
 
   async findSlot(parkingLotId, carSize, plateNumber): Promise<any> {
@@ -27,6 +33,7 @@ export class ParkingService {
     query = query.where(`parking_lot_id = :parkingLotId`, { parkingLotId });
     query = query.andWhere(`car_size = :carSize`, { carSize });
     query = query.andWhere(`slot = :slot`, { slot: SLOT.EMPTY });
+    query = query.andWhere(`status = :STATUS`, { STATUS: STATUS.ACIIVE });
     query.orderBy('parking_id');
     query.limit(1);
     const res = await query.getMany();
@@ -56,6 +63,7 @@ export class ParkingService {
     query = query.where(`parking_lot_id = :parkingLotId`, { parkingLotId });
     query = query.andWhere(`plate_number = :plateNumber`, { plateNumber });
     query = query.andWhere(`slot = :slot`, { slot: SLOT.FULL });
+    query = query.andWhere(`status = :STATUS`, { STATUS: STATUS.ACIIVE });
     query.orderBy('parking_id');
     query.limit(1);
     const res = await query.getMany();
@@ -116,6 +124,25 @@ export class ParkingService {
       return CODE_400;
     }
     return CODE_200;
+  }
 
+  async updateStatus(parkingLotId, parkingId, carSize, status): Promise<any> {
+    try {
+      this.logger.log({
+        message: `[checkSlot] updated parking slot`,
+        parkingLotId: parkingLotId,
+        parkingId: parkingId,
+        status,
+      });
+      const res = await this.parkingRepository.createQueryBuilder().update().set({status:status,slot:SLOT.EMPTY,plateNumber:'', updatedDate: new Date()}).where(`parking_id = :id`,{id:parkingId}).andWhere(`parking_lot_id = :parkingLotId`, { parkingLotId }).andWhere(`car_size = :carSize`, { carSize }).execute();
+      if(res.affected === 0) {
+        this.logger.error({ message: `[checkSlot] Failed parking cannot updated slot` });
+      return CODE_400;
+      }
+    } catch (error) {
+      this.logger.error({ message: `[checkSlot] Failed parking cannot updated slot`,error });
+      return CODE_400;
+    }
+    return CODE_200;
   }
 }

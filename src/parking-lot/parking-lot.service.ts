@@ -16,14 +16,72 @@ export class ParkingLotService {
     private readonly parkingService: ParkingService,
   ) {}
 
-  async listAll(): Promise<any> {
-    const query = this.parkingLotRepository.createQueryBuilder();
-    const data = await query.getMany();
-    console.log('===================');
-    console.log(data);
-    this.logger.log('Doing something...');
-    console.log('===================');
-    return data;
+  async getParkingLot(id): Promise<any> {
+    id = Number(id);
+    if(!Number.isInteger(id)){
+      return CODE_400;
+    }
+    let res = {
+      id:0,
+      name:'',
+      parkingSmall:{
+        size:0,
+        empty:0,
+        use:0,
+      },
+      parkingMedium:{
+        size:0,
+        empty:0,
+        use:0,
+      },
+      parkingLarge:{
+        size:0,
+        empty:0,
+        use:0,
+      },
+    };
+
+    let query = this.parkingLotRepository.createQueryBuilder();
+    query = query.where(`id = :parkingLotId`, { parkingLotId:id });
+    query = query.andWhere(`status = :STATUS`, { STATUS: STATUS.ACIIVE });
+    query.limit(1);
+    const parkingLotRes = await query.getMany();
+    if(parkingLotRes.length){
+      res.id = parkingLotRes[0].id;
+      res.name = parkingLotRes[0].parkingLotName;
+      const resParking = await this.parkingService.listByParkingLot(id);
+      if(resParking.length){
+        for (const parkingData of resParking) {
+          switch(parkingData.carSize) {
+            case CAR_SIZE.SMALL:
+              (parkingData.slot === SLOT.EMPTY) ? res.parkingSmall.empty += 1 : res.parkingSmall.use += 1
+              res.parkingSmall.size += 1;
+              break;
+            case CAR_SIZE.MEDIUM:
+              (parkingData.slot === SLOT.EMPTY) ? res.parkingMedium.empty += 1 : res.parkingMedium.use += 1
+              res.parkingMedium.size += 1;
+              break;
+            case CAR_SIZE.LARGE:
+              (parkingData.slot === SLOT.EMPTY) ? res.parkingLarge.empty += 1 : res.parkingLarge.use += 1
+              res.parkingLarge.size += 1;
+              break;
+            default:
+              break;
+          }
+        }
+      }else{
+        return {
+          statusCode: 204,
+          message: 'No Content',
+        };
+      }
+    }else{
+      return {
+        statusCode: 204,
+        message: 'No Content',
+      };
+    }
+    return res;
   }
 
   async create(body) {
