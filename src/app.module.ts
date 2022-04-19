@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ParkingLotController } from './parking-lot/parking-lot.controller';
 import { ParkingLotModule } from './parking-lot/parking-lot.module';
+import { ParkingModule } from './parking/parking.module';
 import { RegistrationController } from './registration/registration.controller';
 import { RegistrationModule } from './registration/registration.module';
 import databaseConfig from './config/database.config';
@@ -24,6 +25,7 @@ import databaseConfig from './config/database.config';
       inject: [ConfigService],
     }),
     ParkingLotModule,
+    ParkingModule,
     RegistrationModule],
   controllers: [AppController, ParkingLotController, RegistrationController],
   providers: [AppService],

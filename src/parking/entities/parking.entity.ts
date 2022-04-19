@@ -7,30 +7,32 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'parking_lot' })
-export class ParkingLotEntity extends BaseEntity {
+@Entity({ name: 'parking' })
+export class ParkingEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'parking_lot_name' })
-  parkingLotName: string;
+  @Column({ name: 'parking_lot_id' })
+  parkingLotId: number;
 
-  @Column({ name: 'parking_small' })
-  parkingSmall: number;
+  @Column({ name: 'parking_id' })
+  parkingId: number;
 
-  @Column({ name: 'parking_medium' })
-  parkingMedium: number;
-
-  @Column({ name: 'parking_large' })
-  parkingLarge: number;
+  @Column()
+  slot: string;
 
   @Column()
   status: string;
+
+  @Column({ name: 'plate_number' })
+  plateNumber: string;
+
+  @Column({ name: 'car_size' })
+  carSize: string;
 
   @CreateDateColumn({ name: 'created_date', nullable: false })
   createdDate: Date;
 
   @UpdateDateColumn({ name: 'updated_date' })
   updatedDate: Date;
-
 }
