@@ -22,6 +22,64 @@ export class ParkingService {
     return data;
   }
 
+  async findSlot(parkingLotId, carSize, plateNumber): Promise<any> {
+    let query = this.parkingRepository.createQueryBuilder();
+    query = query.where(`parking_lot_id = :parkingLotId`, { parkingLotId });
+    query = query.andWhere(`car_size = :carSize`, { carSize });
+    query = query.andWhere(`slot = :slot`, { slot: SLOT.EMPTY });
+    query.orderBy('parking_id');
+    query.limit(1);
+    const res = await query.getMany();
+    if(res.length){
+      try {
+        this.logger.log({
+          message: `[findSlot] updated parking slot`,
+          parkingLotId: parkingLotId,
+          parkingId: res[0].parkingId,
+        });
+        await this.parkingRepository.createQueryBuilder().update().set({plateNumber:plateNumber, slot: SLOT.FULL,updatedDate: new Date()}).where(`parking_id = :id`,{id:res[0].parkingId}).andWhere(`parking_lot_id = :parkingLotId`, { parkingLotId }).andWhere(`car_size = :carSize`, { carSize }).execute();
+      } catch (error) {
+        this.logger.error({ message: `[findSlot] Failed parking cannot updated slot`,error });
+        return CODE_400;
+      }
+    } else {
+      return {
+        statusCode: 400,
+        message: 'parking is full',
+      };
+    }
+    return CODE_200;
+  }
+
+  async checkSlot(parkingLotId, plateNumber): Promise<any> {
+    let query = this.parkingRepository.createQueryBuilder();
+    query = query.where(`parking_lot_id = :parkingLotId`, { parkingLotId });
+    query = query.andWhere(`plate_number = :plateNumber`, { plateNumber });
+    query = query.andWhere(`slot = :slot`, { slot: SLOT.FULL });
+    query.orderBy('parking_id');
+    query.limit(1);
+    const res = await query.getMany();
+    if(res.length){
+      try {
+        this.logger.log({
+          message: `[checkSlot] updated parking slot`,
+          parkingLotId: parkingLotId,
+          parkingId: res[0].parkingId,
+        });
+        await this.parkingRepository.createQueryBuilder().update().set({plateNumber:'', slot: SLOT.EMPTY,updatedDate: new Date()}).where(`parking_id = :id`,{id:res[0].parkingId}).andWhere(`parking_lot_id = :parkingLotId`, { parkingLotId }).andWhere(`plate_number = :plateNumber`, { plateNumber }).execute();
+      } catch (error) {
+        this.logger.error({ message: `[checkSlot] Failed parking cannot updated slot`,error });
+        return CODE_400;
+      }
+    } else {
+      return {
+        statusCode: 204,
+        message: 'No Content',
+      };
+    }
+    return CODE_200;
+  }
+
   async create(parkingLotId, parkingId, carSize) {
     let res;
     try {
@@ -36,11 +94,11 @@ export class ParkingService {
         updatedDate: new Date(),
       });
       this.logger.log({
-        message: `parking can inserted DB`,
+        message: `[create] parking can inserted DB`,
         parkingId: res.id,
       });
     } catch (error) {
-      this.logger.error({ message: `Failed parking cannot inserted DB`,error });
+      this.logger.error({ message: `[create] Failed parking cannot inserted DB`,error });
       return CODE_400;
     }
     return CODE_201;
@@ -50,11 +108,11 @@ export class ParkingService {
     try {
       await this.parkingRepository.createQueryBuilder().delete().where(`parking_lot_id = :id`,{id:parkingLotId}).execute();
       this.logger.log({
-        message: `deleted parking by parkingLotId`,
+        message: `[deleteAllByParkingLotId] deleted parking by parkingLotId`,
         parkingLotId: parkingLotId,
       });
     } catch (error) {
-      this.logger.error({ message: `Failed parking cannot deleted DB`,error });
+      this.logger.error({ message: `[deleteAllByParkingLotId] Failed parking cannot deleted DB`,error });
       return CODE_400;
     }
     return CODE_200;

@@ -28,6 +28,12 @@ export const CAR_SIZE = {
   LARGE: 'large',
 };
 
+export enum CAR_SIZE_ENUM {
+  SMALL = 'small',
+  MEDIUM = 'medium',
+  LARGE = 'large',
+}
+
 export const CODE_200 = {
   statusCode: HttpStatus.OK,
   message: HTTP_RESPONSE.CODE_200,
