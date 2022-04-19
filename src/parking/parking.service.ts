@@ -28,7 +28,7 @@ export class ParkingService {
       res = await this.parkingRepository.save({
         parkingLotId: parkingLotId,
         parkingId: parkingId,
-        slot: 'empty',
+        slot: SLOT.EMPTY,
         status: STATUS.ACIIVE,
         plateNumber: '',
         carSize: carSize,
@@ -47,7 +47,6 @@ export class ParkingService {
   }
 
   async deleteAllByParkingLotId(parkingLotId) {
-    let res;
     try {
       await this.parkingRepository.createQueryBuilder().delete().where(`parking_lot_id = :id`,{id:parkingLotId}).execute();
       this.logger.log({
