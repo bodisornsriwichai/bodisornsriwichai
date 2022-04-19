@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "31410712-9416-4675-adb7-25ec5e90534e",
+		"name": "parking-lot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create-parking-lot",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"test0111\",\n    \"parkingSmall\":4,\n    \"parkingMedium\":10,\n    \"parkingLarge\":5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/parking-lot"
+			},
+			"response": []
+		},
+		{
+			"name": "check-in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plateNumber\":\"medium_01\",\n    \"carSize\":\"medium\",\n    \"parkingLotId\":5\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/registration"
+			},
+			"response": []
+		},
+		{
+			"name": "check-out",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"plateNumber\":\"medium_01\",\n    \"carSize\":\"medium\",\n    \"parkingLotId\":5\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/registration/out"
+			},
+			"response": []
+		},
+		{
+			"name": "get-parking-lot",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/parking-lot/1"
+			},
+			"response": []
+		},
+		{
+			"name": "list-plateNumber",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/registration/plates/?parkingLotId=5&carSize=small",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"registration",
+						"plates",
+						""
+					],
+					"query": [
+						{
+							"key": "parkingLotId",
+							"value": "5"
+						},
+						{
+							"key": "carSize",
+							"value": "small"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list-allocatedSlot",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/registration/plates/?parkingLotId=5&carSize=small",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"registration",
+						"plates",
+						""
+					],
+					"query": [
+						{
+							"key": "parkingLotId",
+							"value": "5"
+						},
+						{
+							"key": "carSize",
+							"value": "small"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parkingStatus",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"parkingLotId\":1,\n    \"parkingId\":1,\n    \"carSize\":\"large\",\n    \"status\":\"inactive\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/parking/12"
+			},
+			"response": []
+		}
+	]
+}
