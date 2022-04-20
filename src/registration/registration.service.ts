@@ -12,7 +12,16 @@ export class RegistrationService {
 
     async checkIn(body): Promise<any> {
         const { plateNumber, carSize, parkingLotId } = body;
-        return await this.parkingService.findSlot(parkingLotId, carSize, plateNumber);
+        const parking = await this.parkingService.findSlot(parkingLotId, carSize, plateNumber);
+        if(parking?.statusCode === 400) {
+          return parking;
+        }
+        const res = {
+          parkingId : parking[0].parkingId,
+          carSize : parking[0].carSize
+        };
+        
+        return res;
     }
     async checkOut(body): Promise<any> {
         const { plateNumber, parkingLotId } = body;

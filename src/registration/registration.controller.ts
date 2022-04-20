@@ -28,8 +28,8 @@ export class RegistrationController {
     }
 
     @Post()
-    getCheckIn( @Body() body: RegistrationCheckinDto ) {
-        return this.registrationService.checkIn(body);
+    async getCheckIn( @Body() body: RegistrationCheckinDto ) {
+        return await this.registrationService.checkIn(body);
     }
 
 }

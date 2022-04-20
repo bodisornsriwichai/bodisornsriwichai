@@ -55,7 +55,7 @@ export class ParkingService {
         message: 'parking is full',
       };
     }
-    return CODE_200;
+    return res;
   }
 
   async checkSlot(parkingLotId, plateNumber): Promise<any> {
